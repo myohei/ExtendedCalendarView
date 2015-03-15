@@ -6,7 +6,7 @@
 
 
     <include
-        layout="@layout/ecv__caldnear_week"
+        layout="@layout/ecv__calendar_week"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

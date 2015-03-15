@@ -34,7 +34,7 @@ public class CalendarUtils {
         return getDayOfMonth(c) == getDayOfMonth(now);
     }
 
-    public static boolean isHolyday(Calendar c) {
+    public static boolean isHoliday(Calendar c) {
         final int week = c.get(Calendar.DAY_OF_WEEK);
         return week == Calendar.SUNDAY || week == Calendar.SATURDAY;
     }

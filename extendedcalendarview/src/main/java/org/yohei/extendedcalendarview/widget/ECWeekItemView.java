@@ -42,7 +42,7 @@ public class ECWeekItemView extends FrameLayout {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ECWeekItemView);
         final String label = typedArray.getString(R.styleable.ECWeekItemView_week_value);
         typedArray.recycle();
-        View view = LayoutInflater.from(context).inflate(R.layout.view_calendar_week_item, this, true);
+        View view = LayoutInflater.from(context).inflate(R.layout.ecv__view_calendar_week_item, this, true);
         mWeekText = (TextView) view.findViewById(R.id.ecv_week);
         mWeekText.setText(label);
     }

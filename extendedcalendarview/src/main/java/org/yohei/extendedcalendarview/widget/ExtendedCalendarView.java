@@ -54,13 +54,13 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
 
     private void initView(Context context, AttributeSet attrs, int defStyleAttr) {
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ExtendedCalendarView);
-        final int cellLayout = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_layout, R.layout.view_calendar_cell);
+        final int cellLayout = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_layout, R.layout.ecv__view_calendar_cell);
         mDateTextId = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_date_text_id, android.R.id.text1);
         mWeekColorEnable = typedArray.getBoolean(R.styleable.ExtendedCalendarView_week_color_enable, true);
         mCurrentDateColor = typedArray.getColor(R.styleable.ExtendedCalendarView_current_day_color, R.color.ecv__current_day);
         typedArray.recycle();
         final LayoutInflater inflater = LayoutInflater.from(context);
-        ViewGroup vg = (ViewGroup) inflater.inflate(R.layout.view_calendar, this, true);
+        ViewGroup vg = (ViewGroup) inflater.inflate(R.layout.ecv__view_calendar, this, true);
         for (int i = vg.getChildCount(); i < MUST_CHILD_COUNT; i++) {
             View v = inflater.inflate(cellLayout, this, false);
             v.setOnClickListener(this);
@@ -115,7 +115,7 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
                 cell.setSelected(true);
                 continue;
             }
-            if (!mWeekColorEnable || !CalendarUtils.isHolyday(calendar)) {
+            if (!mWeekColorEnable || !CalendarUtils.isHoliday(calendar)) {
                 continue;
             }
             if (CalendarUtils.isSaturday(calendar)) {
