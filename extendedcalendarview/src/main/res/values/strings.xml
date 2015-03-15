@@ -1,0 +1,9 @@
+<resources>
+    <string name="ecv__sun">Sun</string>
+    <string name="ecv__mon">Mon</string>
+    <string name="ecv__tue">Tue</string>
+    <string name="ecv__web">Wed</string>
+    <string name="ecv__thu">Thu</string>
+    <string name="ecv__fri">Fri</string>
+    <string name="ecv__sat">Sat</string>
+</resources>

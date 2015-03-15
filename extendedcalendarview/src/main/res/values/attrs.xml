@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ExtendedBaseCalendarView">
+        <attr name="week_height" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="ExtendedCalendarView">
+        <attr name="cell_layout" format="reference"/>
+        <attr name="cell_date_text_id" format="reference"/>
+        <attr name="week_color_enable" format="boolean"/>
+        <attr name="current_day_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="ECWeekItemView">
+        <attr name="week_value" format="string"/>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ecv__cell_text">8sp</dimen>
+    <dimen name="ecv__week_text">10sp</dimen>
+    <dimen name="ecv__week_height">20dp</dimen>
+</resources>

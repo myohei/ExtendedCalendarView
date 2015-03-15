@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:week="http://schemas.android.com/apk/res-auto"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+    <org.yohei.extendedcalendarview.widget.ECWeekItemView
+        android:id="@+id/ecv__week_sun"
+        week:week_value="@string/ecv__sun"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <org.yohei.extendedcalendarview.widget.ECWeekItemView
+        android:id="@+id/ecv__week_mon"
+        week:week_value="@string/ecv__mon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <org.yohei.extendedcalendarview.widget.ECWeekItemView
+        android:id="@+id/ecv__week_tue"
+        week:week_value="@string/ecv__tue"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <org.yohei.extendedcalendarview.widget.ECWeekItemView
+        android:id="@+id/ecv__week_wed"
+        week:week_value="@string/ecv__web"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <org.yohei.extendedcalendarview.widget.ECWeekItemView
+        android:id="@+id/ecv__week_thu"
+        week:week_value="@string/ecv__thu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <org.yohei.extendedcalendarview.widget.ECWeekItemView
+        android:id="@+id/ecv__week_fri"
+        week:week_value="@string/ecv__fri"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <org.yohei.extendedcalendarview.widget.ECWeekItemView
+        android:id="@+id/ecv__week_sat"
+        week:week_value="@string/ecv__sat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</merge>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ExtendedCalndarCellText">
+        <item name="android:textSize">@dimen/ecv__cell_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLength">2</item>
+    </style>
+
+    <style name="ExtendedCalndarWeekText">
+        <item name="android:textSize">@dimen/ecv__week_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLength">3</item>
+    </style>
+
+</resources>
