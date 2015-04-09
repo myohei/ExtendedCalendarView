@@ -3,10 +3,9 @@ package org.yohei.calendarview;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
+import org.yohei.extendedcalendarview.widget.ECCalendarCell;
 import org.yohei.extendedcalendarview.widget.ExtendedCalendarView;
 
 
@@ -17,35 +16,17 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ExtendedCalendarView extendedCalendarView = (ExtendedCalendarView) findViewById(R.id.calendar);
-        extendedCalendarView.setMonth(2015, 2);
+        extendedCalendarView.setMonth(2015, 4);
         extendedCalendarView.setOnCalendarCellViewClickListener(new ExtendedCalendarView.OnCalendarCellViewClickListener() {
             @Override
-            public void onClick(View cellView, int date) {
-                Log.d("MainActivty", cellView.getClass().getSimpleName() + " / date:" + date);
+            public void onClick(View cellView, int year, int month, int date) {
+                Log.d("MainActivty", cellView.getClass().getSimpleName() + year + "/" + month + "/" + date);
             }
         });
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        ECCalendarCell v = (ECCalendarCell) extendedCalendarView.getCellView(12);
+        Log.d("", "== " + v.getClass().getSimpleName());
+        v.setMiddleText("ミドル");
+        v.setTopText("とーっぷ");
+        v.setBottomText("ぼっとm");
     }
 }

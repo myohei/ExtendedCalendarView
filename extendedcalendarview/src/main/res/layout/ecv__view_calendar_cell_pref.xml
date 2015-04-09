@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="4dp">
 
     <TextView
-        android:id="@+id/ecv_cell_date"
+        android:id="@android:id/text1"
         style="@style/ExtendedCalndarCellText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:maxLength="2"
         android:text="1"
         tools:text="4"/>
 
@@ -19,6 +20,7 @@
         android:id="@+id/ecv_cell_top_txt"
         style="@style/ExtendedCalndarCellText"
         tools:text="top text"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -26,6 +28,7 @@
         android:id="@+id/ecv_cell_middle_txt"
         style="@style/ExtendedCalndarCellText"
         tools:text="top text"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -33,8 +36,7 @@
         android:id="@+id/ecv_cell_bottom_txt"
         style="@style/ExtendedCalndarCellText"
         tools:text="top text"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-
-</LinearLayout>
+</merge>

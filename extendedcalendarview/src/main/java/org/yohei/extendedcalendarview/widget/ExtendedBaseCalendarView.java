@@ -11,27 +11,60 @@ import android.view.ViewGroup;
 import org.yohei.extendedcalendarview.R;
 
 /**
+ * Caldnear View Base.
  * Created by yohei on 3/15/15.
  */
 public class ExtendedBaseCalendarView extends ViewGroup {
 
-    private static final String TAG = ExtendedBaseCalendarView.class.getSimpleName();
+    /**
+     * calendar column count.
+     */
     protected final int CALENDAR_COLUMN_COUNT = 7;
-    protected final int CALNEDAR_ROW_COUNT = 5;
+    /**
+     * calendar row count.
+     */
+    protected final int CALENDAR_ROW_COUNT = 6;
+    /**
+     * calendar week count.
+     */
     protected final int CALENDAR_WEEK_COUNT = 7;
-    protected final int CALENDAR_CELL_TOTAL_COUNT = CALENDAR_COLUMN_COUNT * CALNEDAR_ROW_COUNT;
+    /**
+     * calendar cell total count.
+     */
+    protected final int CALENDAR_CELL_TOTAL_COUNT = CALENDAR_COLUMN_COUNT * CALENDAR_ROW_COUNT;
+    /**
+     * must child count.
+     */
     protected final int MUST_CHILD_COUNT = CALENDAR_CELL_TOTAL_COUNT + CALENDAR_WEEK_COUNT;
 
     private int mWeekHeight = 0;
 
+    /**
+     * constructor.
+     *
+     * @param context
+     */
     public ExtendedBaseCalendarView(Context context) {
         this(context, null);
     }
 
+    /**
+     * constructor.
+     *
+     * @param context
+     * @param attrs
+     */
     public ExtendedBaseCalendarView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
+    /**
+     * constructor.
+     *
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     */
     public ExtendedBaseCalendarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context, attrs, defStyleAttr, 0);
@@ -43,16 +76,22 @@ public class ExtendedBaseCalendarView extends ViewGroup {
         initView(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    /**
+     * init view.
+     *
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     * @param defStyleRes
+     */
     private void initView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ExtendedBaseCalendarView);
         mWeekHeight = typedArray.getDimensionPixelSize(R.styleable.ExtendedBaseCalendarView_week_height, context.getResources().getDimensionPixelSize(R.dimen.ecv__week_height));
         typedArray.recycle();
     }
 
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // 小ビューのサイズを決定する
         final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         if (widthMode != MeasureSpec.EXACTLY && heightMode != MeasureSpec.EXACTLY) {
@@ -65,15 +104,16 @@ public class ExtendedBaseCalendarView extends ViewGroup {
         final int height = heightSize - getPaddingTop() - getPaddingBottom();
         final int cellWidth = width / CALENDAR_COLUMN_COUNT;
         int childIdx = 0;
+        // weekly
         for (; childIdx < CALENDAR_WEEK_COUNT; childIdx++) {
             View child = getChildAt(childIdx);
             int childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(cellWidth, MeasureSpec.EXACTLY);
             int childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(mWeekHeight, MeasureSpec.EXACTLY);
             child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
         }
-        // 次にcell
+        // cell
         final int cellTotalHeight = height - mWeekHeight;
-        final int cellHeight = cellTotalHeight / CALNEDAR_ROW_COUNT;
+        final int cellHeight = cellTotalHeight / CALENDAR_ROW_COUNT;
         final int cellCount = getChildCount() >= MUST_CHILD_COUNT ? MUST_CHILD_COUNT : getChildCount();
         for (; childIdx < cellCount; childIdx++) {
             View child = getChildAt(childIdx);
@@ -85,12 +125,8 @@ public class ExtendedBaseCalendarView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int width = (r - l) - getPaddingLeft() - getPaddingRight();
-        int height = (b - t) - getPaddingTop() - getPaddingBottom();
         int left = getPaddingLeft();
         int top = getPaddingTop();
-        int right = left + width;
-        int bottom = top + height;
         int nextLeft = left;
         int nextTop = top;
         final int columnLastIdx = 6;
@@ -108,6 +144,15 @@ public class ExtendedBaseCalendarView extends ViewGroup {
         }
     }
 
+    /**
+     * layout childview.
+     *
+     * @param child
+     * @param l
+     * @param t
+     * @param r
+     * @param b
+     */
     private void childLayout(View child, int l, int t, int r, int b) {
         child.layout(l, t, r, b);
     }

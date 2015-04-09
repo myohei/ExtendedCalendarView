@@ -4,7 +4,6 @@
     <style name="ExtendedCalndarCellText">
         <item name="android:textSize">@dimen/ecv__cell_text</item>
         <item name="android:singleLine">true</item>
-        <item name="android:maxLength">2</item>
     </style>
 
     <style name="ExtendedCalndarWeekText">

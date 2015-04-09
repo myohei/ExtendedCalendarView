@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,7 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
 
     private void initView(Context context, AttributeSet attrs, int defStyleAttr) {
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ExtendedCalendarView);
-        final int cellLayout = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_layout, R.layout.ecv__view_calendar_cell);
+        final int cellLayout = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_layout, R.layout.ecv_view_cell);
         mDateTextId = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_date_text_id, android.R.id.text1);
         mWeekColorEnable = typedArray.getBoolean(R.styleable.ExtendedCalendarView_week_color_enable, true);
         mCurrentDateColor = typedArray.getColor(R.styleable.ExtendedCalendarView_current_day_color, R.color.ecv__current_day);
@@ -72,6 +73,8 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
             weekItemView = (ECWeekItemView) findViewById(R.id.ecv__week_sat);
             weekItemView.getWeekText().setTextColor(Color.BLUE);
         }
+        Calendar calendar = Calendar.getInstance();
+        setMonth(calendar.get(Calendar.MONTH));
     }
 
     @Nullable
@@ -83,16 +86,27 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         return findViewById(id);
     }
 
+    /**
+     * set month.
+     *
+     * @param month
+     */
     public void setMonth(int month) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         this.setMonth(calendar.get(Calendar.YEAR), month);
     }
 
+    /**
+     * set month.
+     *
+     * @param year
+     * @param month
+     */
     public void setMonth(int year, int month) {
         resetCells();
         final Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, FIRST_DATE);
+        calendar.set(year, month - 1, FIRST_DATE); // japan
         final int firstWeek = calendar.get(Calendar.DAY_OF_WEEK); // 1-7
         final int lastDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         mSelectedDay = CalendarUtils.getDayOfMonth(calendar);
@@ -103,13 +117,15 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
             final int id = getResources().getIdentifier(CELL_ID_PREFIX + day, "id", getContext().getPackageName());
             cell.setId(id);
             cell.setTag(day);
+            cell.setEnabled(true);
+            cell.setOnClickListener(this);
+            cell.setVisibility(VISIBLE);
             final TextView tv = (TextView) cell.findViewById(mDateTextId);
             if (tv == null) {
                 continue;
             }
             tv.setText(String.valueOf(day));
-            final boolean currentDay = CalendarUtils.isCurrentDay(calendar);
-            if (currentDay) {
+            if (DateUtils.isToday(calendar.getTimeInMillis())) {
                 tv.setTextColor(getResources().getColor(mCurrentDateColor));
                 mSelectedDay = day;
                 cell.setSelected(true);
@@ -129,22 +145,47 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
 
     private void resetCells() {
         View v;
-        for (int i = 0, size = getChildCount(); i < size; i++) {
+        for (int i = CALENDAR_WEEK_COUNT, size = getChildCount(); i < size; i++) {
             v = getChildAt(i);
             v.setId(0);
             v.setTag(null);
             v.setSelected(false);
+            v.setVisibility(GONE);
         }
     }
 
+    /**
+     * get current calendar.
+     *
+     * @return
+     */
+    public Calendar getCurrentCalendar() {
+        return (Calendar) mCurrentCalendar.clone();
+    }
+
+    /**
+     * get current year.
+     *
+     * @return
+     */
     public int getCurrentYear() {
         return CalendarUtils.getYear(mCurrentCalendar);
     }
 
+    /**
+     * get current month.
+     *
+     * @return
+     */
     public int getCurrentMonth() {
         return CalendarUtils.getMonth(mCurrentCalendar);
     }
 
+    /**
+     * get current day.
+     *
+     * @return
+     */
     public int getSelectedDay() {
         return mSelectedDay;
     }
@@ -158,14 +199,24 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         mSelectedView = view;
         mSelectedDay = (int) view.getTag();
         if (mOnCalendarCellViewClickListener != null) {
-            mOnCalendarCellViewClickListener.onClick(view, mSelectedDay);
+            mOnCalendarCellViewClickListener.onClick(view, CalendarUtils.getYear(mCurrentCalendar), CalendarUtils.getMonth(mCurrentCalendar) + 1, mSelectedDay);
         }
     }
 
+    /**
+     * get listener.
+     *
+     * @return
+     */
     public OnCalendarCellViewClickListener getOnCalendarCellViewClickListener() {
         return mOnCalendarCellViewClickListener;
     }
 
+    /**
+     * set listener.
+     *
+     * @param onCalendarCellViewClickListener
+     */
     public void setOnCalendarCellViewClickListener(OnCalendarCellViewClickListener onCalendarCellViewClickListener) {
         if (onCalendarCellViewClickListener != null) {
             mOnCalendarCellViewClickListener = onCalendarCellViewClickListener;
@@ -181,6 +232,7 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
     }
 
     public interface OnCalendarCellViewClickListener {
-        void onClick(View cellView, int date);
+        void onClick(View cellView, int year, int month, int date);
     }
+
 }

@@ -273,7 +273,6 @@
     <org.yohei.extendedcalendarview.widget.ExtendedCalendarView
         android:id="@+id/calendar"
         calendar:week_height="20dp"
-        calendar:cell_layout="@layout/view_1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </RelativeLayout>
