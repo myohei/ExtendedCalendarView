@@ -8,17 +8,18 @@
 
     <TextView
         android:id="@android:id/text1"
-        style="@style/ExtendedCalndarCellText"
-        android:layout_width="match_parent"
+        style="@style/ExtendedCalendarCellText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:padding="3dp"
+        android:layout_gravity="center_horizontal"
         android:maxLength="2"
-        android:text="1"
         tools:text="4"/>
 
     <TextView
         android:id="@+id/ecv_cell_top_txt"
-        style="@style/ExtendedCalndarCellText"
+        style="@style/ExtendedCalendarCellText"
         tools:text="top text"
         android:visibility="invisible"
         android:layout_width="match_parent"
@@ -26,7 +27,7 @@
 
     <TextView
         android:id="@+id/ecv_cell_middle_txt"
-        style="@style/ExtendedCalndarCellText"
+        style="@style/ExtendedCalendarCellText"
         tools:text="top text"
         android:visibility="invisible"
         android:layout_width="match_parent"
@@ -34,7 +35,7 @@
 
     <TextView
         android:id="@+id/ecv_cell_bottom_txt"
-        style="@style/ExtendedCalndarCellText"
+        style="@style/ExtendedCalendarCellText"
         tools:text="top text"
         android:visibility="invisible"
         android:layout_width="match_parent"

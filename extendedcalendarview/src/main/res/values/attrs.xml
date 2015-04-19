@@ -8,7 +8,7 @@
         <attr name="cell_layout" format="reference"/>
         <attr name="cell_date_text_id" format="reference"/>
         <attr name="week_color_enable" format="boolean"/>
-        <attr name="current_day_color" format="color"/>
+        <attr name="current_day_resource" format="reference"/>
         <attr name="month" format="integer"/>
     </declare-styleable>
 

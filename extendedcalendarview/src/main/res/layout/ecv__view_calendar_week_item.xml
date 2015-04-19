@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/ecv_week"
-        style="@style/ExtendedCalndarWeekText"
+        style="@style/ExtendedCalendarWeekText"
         tools:text="月"
         android:layout_gravity="center"
         android:gravity="center"

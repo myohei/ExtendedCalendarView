@@ -24,14 +24,41 @@ import java.util.Calendar;
  */
 public class ExtendedCalendarView extends ExtendedBaseCalendarView implements View.OnClickListener {
 
+    /**
+     * first date.
+     */
     private static final int FIRST_DATE = 1;
+    /**
+     * date text id.
+     */
     private int mDateTextId;
+    /**
+     * cell click listener.
+     */
     private OnCalendarCellViewClickListener mOnCalendarCellViewClickListener;
+    /**
+     * id prefix.
+     */
     private static final String CELL_ID_PREFIX = "ecv__date";
+    /**
+     * current calendar object.
+     */
     private Calendar mCurrentCalendar;
+    /**
+     * weekly color enabled.
+     */
     private boolean mWeekColorEnable;
-    private int mCurrentDateColor;
+    /**
+     * current date background resource id.
+     */
+    private int mCurrentDateBackgroundResourceId;
+    /**
+     * selected date.
+     */
     private int mSelectedDay;
+    /**
+     * selected view.
+     */
     private View mSelectedView;
 
     public ExtendedCalendarView(Context context) {
@@ -58,7 +85,7 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         final int cellLayout = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_layout, R.layout.ecv_view_cell);
         mDateTextId = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_date_text_id, android.R.id.text1);
         mWeekColorEnable = typedArray.getBoolean(R.styleable.ExtendedCalendarView_week_color_enable, true);
-        mCurrentDateColor = typedArray.getColor(R.styleable.ExtendedCalendarView_current_day_color, R.color.ecv__current_day);
+        mCurrentDateBackgroundResourceId = typedArray.getResourceId(R.styleable.ExtendedCalendarView_current_day_resource, R.drawable.evc__today_bg);
         typedArray.recycle();
         final LayoutInflater inflater = LayoutInflater.from(context);
         ViewGroup vg = (ViewGroup) inflater.inflate(R.layout.ecv__view_calendar, this, true);
@@ -77,6 +104,12 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         setMonth(calendar.get(Calendar.MONTH));
     }
 
+    /**
+     * get (your custom) CellView at date.
+     *
+     * @param date date.
+     * @return CellView
+     */
     @Nullable
     public View getCellView(int date) {
         if (date < 0) {
@@ -126,8 +159,8 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
             }
             tv.setText(String.valueOf(day));
             if (DateUtils.isToday(calendar.getTimeInMillis())) {
-                tv.setTextColor(getResources().getColor(mCurrentDateColor));
                 mSelectedDay = day;
+                tv.setBackgroundResource(R.drawable.evc__today_bg);
                 cell.setSelected(true);
                 continue;
             }
@@ -143,6 +176,9 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         mCurrentCalendar = (Calendar) calendar.clone();
     }
 
+    /**
+     * reset cells.
+     */
     private void resetCells() {
         View v;
         for (int i = CALENDAR_WEEK_COUNT, size = getChildCount(); i < size; i++) {
@@ -150,6 +186,7 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
             v.setId(0);
             v.setTag(null);
             v.setSelected(false);
+            v.findViewById(mDateTextId).setBackgroundResource(0);
             v.setVisibility(GONE);
         }
     }
@@ -231,6 +268,9 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         tv.setTextColor(Color.RED);
     }
 
+    /**
+     * Cell in Calendar  Clicked Listener.
+     */
     public interface OnCalendarCellViewClickListener {
         void onClick(View cellView, int year, int month, int date);
     }
