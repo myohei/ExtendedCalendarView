@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-![](https://github.com/myohei/ExtendedCalendarView/img/img01.png)
+![](img/img01.png)
 
 ### Customize 
 
