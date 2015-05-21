@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import org.yohei.extendedcalendarview.widget.DefaultExtendedCalendarViewAdapter;
 import org.yohei.extendedcalendarview.widget.ECCalendarCell;
 import org.yohei.extendedcalendarview.widget.ExtendedCalendarView;
 import org.yohei.extendedcalendarview.widget.util.CalendarUtils;
@@ -26,6 +27,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         final TextView yearMonth = (TextView) findViewById(R.id.year_month);
         final ExtendedCalendarView extendedCalendarView = (ExtendedCalendarView) findViewById(R.id.calendar);
+        extendedCalendarView.setAdapter(new DefaultExtendedCalendarViewAdapter(this));
         extendedCalendarView.setMonth(2015, 4);
         yearMonth.setText(DateUtils.formatDateTime(this, extendedCalendarView.getCurrentCalendar().getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR | DateUtils.FORMAT_NO_MONTH_DAY));
         extendedCalendarView.setOnCalendarCellViewClickListener(new ExtendedCalendarView.OnCalendarCellViewClickListener() {
@@ -41,17 +43,16 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void run() {
-                Log.d("", "== run ==");
                 Calendar calendar = extendedCalendarView.getCurrentCalendar();
                 calendar.add(Calendar.MONTH, 1);
                 yearMonth.setText(DateUtils.formatDateTime(getApplicationContext(), extendedCalendarView.getCurrentCalendar().getTimeInMillis(), DateUtils.FORMAT_SHOW_YEAR));
                 extendedCalendarView.setMonth(CalendarUtils.getYear(calendar), CalendarUtils.getMonth(calendar));
                 if (count < 10) {
-                    mHandler.postDelayed(this, 500);
+                    mHandler.postDelayed(this, 1000);
                     count++;
                 }
             }
         };
-//        mHandler.postAtTime(nextMonth, 500);
+        mHandler.postDelayed(nextMonth, 3000);
     }
 }

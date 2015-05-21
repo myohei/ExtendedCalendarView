@@ -5,24 +5,35 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import org.yohei.extendedcalendarview.R;
 import org.yohei.extendedcalendarview.widget.util.CalendarUtils;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Calendar;
 
 /**
  * Created by yohei on 3/15/15.
  */
 public class ExtendedCalendarView extends ExtendedBaseCalendarView implements View.OnClickListener {
+
+    public static final int DAY_TYPE_EMPTY = -1;
+    public static final int DAY_TYPE_NORMAL = 0;
+    public static final int DAY_TYPE_SATURDAY = 1;
+    public static final int DAY_TYPE_SUNDAY = 2;
+    public static final int DAY_TYPE_TODAY = 3;
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({DAY_TYPE_NORMAL, DAY_TYPE_SATURDAY, DAY_TYPE_SUNDAY, DAY_TYPE_TODAY, DAY_TYPE_EMPTY})
+    public @interface DayType {
+    }
 
     /**
      * first date.
@@ -49,17 +60,18 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
      */
     private boolean mWeekColorEnable;
     /**
-     * current date background resource id.
-     */
-    private int mCurrentDateBackgroundResourceId;
-    /**
      * selected date.
      */
-    private int mSelectedDay;
+    private int mSelectedDate;
     /**
      * selected view.
      */
     private View mSelectedView;
+
+    /**
+     * adapter.
+     */
+    private ExtendedCalendarViewAdapter mAdapter;
 
     public ExtendedCalendarView(Context context) {
         this(context, null);
@@ -82,26 +94,16 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
 
     private void initView(Context context, AttributeSet attrs, int defStyleAttr) {
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ExtendedCalendarView);
-        final int cellLayout = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_layout, R.layout.ecv_view_cell);
-        mDateTextId = typedArray.getResourceId(R.styleable.ExtendedCalendarView_cell_date_text_id, android.R.id.text1);
         mWeekColorEnable = typedArray.getBoolean(R.styleable.ExtendedCalendarView_week_color_enable, true);
-        mCurrentDateBackgroundResourceId = typedArray.getResourceId(R.styleable.ExtendedCalendarView_current_day_resource, R.drawable.evc__today_bg);
         typedArray.recycle();
         final LayoutInflater inflater = LayoutInflater.from(context);
-        ViewGroup vg = (ViewGroup) inflater.inflate(R.layout.ecv__view_calendar, this, true);
-        for (int i = vg.getChildCount(); i < MUST_CHILD_COUNT; i++) {
-            View v = inflater.inflate(cellLayout, this, false);
-            v.setOnClickListener(this);
-            this.addView(v);
-        }
+        inflater.inflate(R.layout.ecv__view_calendar, this, true);
         if (mWeekColorEnable) {
             ECWeekItemView weekItemView = (ECWeekItemView) findViewById(R.id.ecv__week_sun);
             weekItemView.getWeekText().setTextColor(Color.RED);
             weekItemView = (ECWeekItemView) findViewById(R.id.ecv__week_sat);
             weekItemView.getWeekText().setTextColor(Color.BLUE);
         }
-        Calendar calendar = Calendar.getInstance();
-        setMonth(calendar.get(Calendar.MONTH));
     }
 
     /**
@@ -137,43 +139,81 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
      * @param month
      */
     public void setMonth(int year, int month) {
+        if (mAdapter == null) {
+            throw new IllegalStateException("You MUST set ExtendedCalendarViewAdapter, before set month.");
+        }
         resetCells();
         final Calendar calendar = Calendar.getInstance();
         calendar.set(year, month - 1, FIRST_DATE); // japan
         final int firstWeek = calendar.get(Calendar.DAY_OF_WEEK); // 1-7
         final int lastDate = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        mSelectedDay = CalendarUtils.getDayOfMonth(calendar);
+        mSelectedDate = CalendarUtils.getDayOfMonth(calendar);
         View cell;
+        for (int i = CALENDAR_WEEK_COUNT; i < CALENDAR_WEEK_COUNT + firstWeek - 1; i++) {
+            final boolean alreadyCreated = i < getChildCount();
+            cell = alreadyCreated ? getChildAt(i) : null;
+            cell = mAdapter.getCellView(month, -1, DAY_TYPE_EMPTY, cell, this);
+            if (alreadyCreated) {
+                this.removeViewAt(i);
+            }
+            this.addView(cell, i);
+        }
         for (int i = CALENDAR_WEEK_COUNT + firstWeek - 1, size = i + lastDate; i < size; i++, calendar.add(Calendar.DAY_OF_MONTH, 1)) {
-            cell = getChildAt(i);
-            final int day = CalendarUtils.getDayOfMonth(calendar);
-            final int id = getResources().getIdentifier(CELL_ID_PREFIX + day, "id", getContext().getPackageName());
+            final boolean alreadyCreated = i < getChildCount();
+            cell = alreadyCreated ? getChildAt(i) : null;
+            final int date = CalendarUtils.getDayOfMonth(calendar);
+            final int id = getResources().getIdentifier(CELL_ID_PREFIX + date, "id", getContext().getPackageName());
+            cell = mAdapter.getCellView(month, date, getDayType(calendar), cell, this);
+            if (alreadyCreated) {
+                this.removeViewAt(i);
+            }
+            this.addView(cell, i);
             cell.setId(id);
-            cell.setTag(day);
+            cell.setTag(date);
             cell.setEnabled(true);
             cell.setOnClickListener(this);
             cell.setVisibility(VISIBLE);
-            final TextView tv = (TextView) cell.findViewById(mDateTextId);
-            if (tv == null) {
-                continue;
-            }
-            tv.setText(String.valueOf(day));
             if (DateUtils.isToday(calendar.getTimeInMillis())) {
-                mSelectedDay = day;
-                tv.setBackgroundResource(R.drawable.evc__today_bg);
+                mSelectedDate = date;
                 cell.setSelected(true);
-                continue;
-            }
-            if (!mWeekColorEnable || !CalendarUtils.isHoliday(calendar)) {
-                continue;
-            }
-            if (CalendarUtils.isSaturday(calendar)) {
-                setTextColorSaturday(tv);
-            } else if (CalendarUtils.isSunday(calendar)) {
-                setTextColorSunday(tv);
             }
         }
         mCurrentCalendar = (Calendar) calendar.clone();
+    }
+
+    /**
+     * setAdapter.
+     *
+     * @param adapter:
+     */
+    public void setAdapter(ExtendedCalendarViewAdapter adapter) {
+        if (adapter == null || adapter.equals(mAdapter)) {
+            return;
+        }
+        this.mAdapter = adapter;
+    }
+
+    /**
+     * getAdapter.
+     *
+     * @return ExtendedCalendarViewAdapter
+     */
+    public ExtendedCalendarViewAdapter getAdapter() {
+        return mAdapter;
+    }
+
+    @ExtendedCalendarView.DayType
+    private static int getDayType(Calendar calendar) {
+        if (DateUtils.isToday(calendar.getTimeInMillis())) {
+            return DAY_TYPE_TODAY;
+        }
+        if (CalendarUtils.isSaturday(calendar)) {
+            return DAY_TYPE_SATURDAY;
+        }
+        if (CalendarUtils.isSunday(calendar)) {
+            return DAY_TYPE_SUNDAY;
+        }
+        return DAY_TYPE_NORMAL;
     }
 
     /**
@@ -186,8 +226,9 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
             v.setId(0);
             v.setTag(null);
             v.setSelected(false);
-            v.findViewById(mDateTextId).setBackgroundResource(0);
-            v.setVisibility(GONE);
+            v.setOnClickListener(null);
+            v.setVisibility(INVISIBLE);
+            mAdapter.resetCell(v);
         }
     }
 
@@ -224,7 +265,7 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
      * @return
      */
     public int getSelectedDay() {
-        return mSelectedDay;
+        return mSelectedDate;
     }
 
     @Override
@@ -234,9 +275,9 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         }
         view.setSelected(true);
         mSelectedView = view;
-        mSelectedDay = (int) view.getTag();
+        mSelectedDate = (int) view.getTag();
         if (mOnCalendarCellViewClickListener != null) {
-            mOnCalendarCellViewClickListener.onClick(view, CalendarUtils.getYear(mCurrentCalendar), CalendarUtils.getMonth(mCurrentCalendar) + 1, mSelectedDay);
+            mOnCalendarCellViewClickListener.onClick(view, CalendarUtils.getYear(mCurrentCalendar), CalendarUtils.getMonth(mCurrentCalendar) + 1, mSelectedDate);
         }
     }
 
@@ -258,14 +299,6 @@ public class ExtendedCalendarView extends ExtendedBaseCalendarView implements Vi
         if (onCalendarCellViewClickListener != null) {
             mOnCalendarCellViewClickListener = onCalendarCellViewClickListener;
         }
-    }
-
-    private static void setTextColorSaturday(@NonNull TextView tv) {
-        tv.setTextColor(Color.BLUE);
-    }
-
-    private static void setTextColorSunday(@NonNull TextView tv) {
-        tv.setTextColor(Color.RED);
     }
 
     /**

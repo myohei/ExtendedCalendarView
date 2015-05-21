@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,8 +58,21 @@ public class ECCalendarCell extends LinearLayout {
         mBottomText = (TextView) view.findViewById(R.id.ecv_cell_bottom_txt);
     }
 
+    public TextView getDateText() {
+        return mDateText;
+    }
+
     /**
-     * set test at top text view.
+     * set date text.
+     *
+     * @param date
+     */
+    public void setDateText(String date) {
+        setText(mDateText, date);
+    }
+
+    /**
+     * set text at top text view.
      *
      * @param txt text
      */
@@ -69,7 +81,7 @@ public class ECCalendarCell extends LinearLayout {
     }
 
     /**
-     * set test at middle text view.
+     * set text at middle text view.
      *
      * @param txt text
      */
@@ -78,7 +90,7 @@ public class ECCalendarCell extends LinearLayout {
     }
 
     /**
-     * set test at bottom text view.
+     * set text at bottom text view.
      *
      * @param txt text
      */
@@ -91,11 +103,7 @@ public class ECCalendarCell extends LinearLayout {
      * @param txt
      */
     private static void setText(final @NonNull TextView tv, final String txt) {
-        if (TextUtils.isEmpty(txt)) {
-            tv.setVisibility(INVISIBLE);
-        } else {
-            tv.setText(txt);
-            tv.setVisibility(VISIBLE);
-        }
+        tv.setText(txt);
+        tv.setVisibility(VISIBLE);
     }
 }

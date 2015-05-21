@@ -10,6 +10,11 @@ public class CalendarUtils {
     private CalendarUtils() {
     }
 
+    /**
+     * get day of month from calendar.
+     * @param c
+     * @return
+     */
     public static int getDayOfMonth(Calendar c) {
         return c.get(Calendar.DAY_OF_MONTH);
     }
